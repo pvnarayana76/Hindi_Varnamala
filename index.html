@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -19,155 +20,136 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
-            overflow: hidden;
+            overflow: hidden; 
             touch-action: manipulation;
         }
 
         header {
             background: white;
-            padding: 10px 20px;
+            padding: 5px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 10;
+            height: 50px;
+            flex-shrink: 0;
         }
 
         .game-wrapper {
             display: flex;
             flex: 1;
-            gap: 20px;
-            padding: 20px;
+            gap: 15px;
+            padding: 15px;
+            height: calc(100vh - 80px); 
             overflow: hidden;
         }
 
+        /* LEFT SIDE - Scrambled Zone */
         #scrambled-zone {
             width: 35%;
             background: #dfe6e9;
-            border: 3px dashed #b2bec3;
-            border-radius: 20px;
+            border: 2px dashed #b2bec3;
+            border-radius: 15px;
             display: flex;
             flex-wrap: wrap;
-            padding: 20px;
-            gap: 12px;
+            padding: 15px;
+            gap: 10px;
             overflow-y: auto;
             justify-content: center;
             align-content: flex-start;
         }
 
+        /* RIGHT SIDE - Answer Zone */
         #answer-zone {
             width: 65%;
             background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            overflow-y: auto;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            justify-content: space-between;
+            overflow-y: auto;
         }
 
         .row { 
             display: flex; 
-            gap: 10px; 
+            gap: 5px; 
             align-items: center; 
-            flex-wrap: wrap; 
-            padding: 10px;
-            border-radius: 15px;
-            transition: all 0.5s ease;
+            padding: 4px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.4s ease;
         }
 
-        @keyframes goldBlink {
-            0% { background-color: transparent; }
-            50% { background-color: rgba(241, 196, 15, 0.4); box-shadow: 0 0 20px var(--gold); }
-            100% { background-color: transparent; }
+        /* ✨ BIGGER TILES ON LEFT ✨ */
+        #scrambled-zone .tile {
+            width: min(6.5vw, 8.5vh); 
+            height: min(6.5vw, 8.5vh);
+            font-size: min(2rem, 4.5vh);
+            box-shadow: 0 5px 0 #4834d4;
         }
 
-        .row-complete {
-            animation: goldBlink 0.8s ease 2;
-            border: 2px solid var(--gold);
-            background-color: rgba(241, 196, 15, 0.05);
-        }
-
-        .row-label { width: 100px; font-size: 0.8rem; font-weight: bold; color: #636e72; }
-
-        .tile, .slot {
-            width: 55px;
-            height: 55px;
-            border-radius: 12px;
+        /* ✨ PRESENT SIZE ON RIGHT ✨ */
+        .slot {
+            width: min(4.2vw, 6vh); 
+            height: min(4.2vw, 6vh);
+            background: #f1f2f6; 
+            border: 1.5px solid #dfe6e9;
+            border-radius: 8px;
+            flex-shrink: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
-            font-weight: bold;
         }
 
-        .slot { background: #f1f2f6; border: 2px solid #dfe6e9; }
-        
+        .slot .tile {
+            width: 100%;
+            height: 100%;
+            font-size: min(1.3rem, 3vh);
+            box-shadow: 0 3px 0 #4834d4;
+        }
+
         .tile {
             background: var(--primary);
             color: white;
             cursor: grab;
-            box-shadow: 0 4px 0 #4834d4;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            z-index: 10;
+            transition: width 0.2s, height 0.2s, font-size 0.2s;
         }
 
         .tile.correct {
             background: var(--success);
-            box-shadow: 0 4px 0 #009432;
+            box-shadow: 0 3px 0 #009432;
             cursor: default;
         }
 
-        /* 🏆 SUCCESS MODAL 🏆 */
-        #modal-overlay {
-            display: none;
-            position: fixed;
-            top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.7);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
+        /* Anim/Labels */
+        .row-label { width: 85px; font-size: 0.7rem; font-weight: bold; color: #636e72; flex-shrink: 0; }
+        @keyframes goldPulse { 0% { background: transparent; } 50% { background: rgba(241, 196, 15, 0.3); } 100% { background: transparent; } }
+        .row-complete { animation: goldPulse 0.8s ease 2; border-color: var(--gold); background-color: rgba(241, 196, 15, 0.05); }
 
-        .modal {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            max-width: 400px;
-        }
-
-        .modal h1 { color: var(--success); margin-top: 0; }
-        .modal p { font-size: 1.2rem; margin: 20px 0; }
-        
-        button {
-            padding: 10px 25px;
-            font-size: 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        @media (max-width: 900px) {
-            .game-wrapper { flex-direction: column; }
-            #scrambled-zone { width: 100%; height: 30%; }
-            #answer-zone { width: 100%; height: 70%; }
-        }
+        #modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; }
+        .modal { background: white; padding: 30px; border-radius: 20px; text-align: center; }
+        button { padding: 8px 20px; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <header>
-    <div><strong>हिन्दी Master</strong></div>
+    <div style="font-weight: bold;">हिन्दी Master</div>
     <div style="display:flex; gap:10px; align-items:center;">
         <select id="level-select" onchange="initGame()">
             <option value="vowels">Vowels Only</option>
             <option value="consonants">Consonants Only</option>
             <option value="full" selected>Full Varnamala</option>
         </select>
-        <div id="timer-display">Time: 0s</div>
+        <div id="timer-display" style="font-size: 0.9rem;">Time: 0s</div>
         <button onclick="initGame()">Reset</button>
     </div>
 </header>
@@ -179,9 +161,9 @@
 
 <div id="modal-overlay">
     <div class="modal">
-        <h1>शाबाश! (Shabash!)</h1>
+        <h1 style="color:var(--success)">शाबाश!</h1>
         <p id="final-stats"></p>
-        <button onclick="closeModal()">Play Again</button>
+        <button onclick="initGame()">Play Again</button>
     </div>
 </div>
 
@@ -203,37 +185,30 @@
         ]
     };
 
-    let seconds = 0;
-    let timerInt;
-    let totalTilesNeeded = 0;
-    let currentCorrectTiles = 0;
+    let seconds = 0, timerInt, totalNeeded = 0, currentCorrect = 0;
 
     function initGame() {
         document.getElementById('modal-overlay').style.display = 'none';
         clearInterval(timerInt);
-        seconds = 0;
-        currentCorrectTiles = 0;
+        seconds = 0; currentCorrect = 0;
         document.getElementById('timer-display').innerText = "Time: 0s";
         timerInt = setInterval(() => { seconds++; document.getElementById('timer-display').innerText = `Time: ${seconds}s`; }, 1000);
 
         const level = document.getElementById('level-select').value;
-        const scrambledZone = document.getElementById('scrambled-zone');
-        const answerZone = document.getElementById('answer-zone');
-        
-        scrambledZone.innerHTML = '';
-        answerZone.innerHTML = '';
+        const scrambled = document.getElementById('scrambled-zone');
+        const answer = document.getElementById('answer-zone');
+        scrambled.innerHTML = ''; answer.innerHTML = '';
 
-        let selectedRows = (level === 'vowels') ? data.vowels : (level === 'consonants') ? data.consonants : [...data.vowels, ...data.consonants];
+        let selected = (level === 'vowels') ? data.vowels : (level === 'consonants') ? data.consonants : [...data.vowels, ...data.consonants];
         let allChars = [];
 
-        selectedRows.forEach(group => {
+        selected.forEach(group => {
             const row = document.createElement('div');
             row.className = 'row';
             const label = document.createElement('div');
             label.className = 'row-label';
             label.innerText = group.label;
             row.appendChild(label);
-
             group.letters.forEach(char => {
                 allChars.push(char);
                 const slot = document.createElement('div');
@@ -243,38 +218,23 @@
                 slot.ondrop = handleDrop;
                 row.appendChild(slot);
             });
-            answerZone.appendChild(row);
+            answer.appendChild(row);
         });
 
-        totalTilesNeeded = allChars.length;
+        totalNeeded = allChars.length;
         allChars.sort(() => Math.random() - 0.5);
         allChars.forEach(char => {
             const tile = document.createElement('div');
             tile.className = 'tile';
             tile.innerText = char;
             tile.draggable = true;
-            tile.id = 't-' + Math.random().toString(36).substr(2, 9);
+            tile.id = 't-' + Math.random().toString(36).substr(2, 5);
             tile.ondragstart = e => e.dataTransfer.setData("text", e.target.id);
             tile.ontouchstart = handleTouchStart;
             tile.ontouchmove = handleTouchMove;
             tile.ontouchend = handleTouchEnd;
-            scrambledZone.appendChild(tile);
+            scrambled.appendChild(tile);
         });
-    }
-
-    function checkRowCompletion(slot) {
-        const row = slot.parentElement;
-        const slotsInRow = row.querySelectorAll('.slot');
-        let complete = true;
-        slotsInRow.forEach(s => { if (!s.querySelector('.tile.correct')) complete = false; });
-        if (complete) row.classList.add('row-complete');
-        
-        // Final Win Check
-        if (currentCorrectTiles === totalTilesNeeded) {
-            clearInterval(timerInt);
-            document.getElementById('final-stats').innerText = `You completed the varnamala in ${seconds} seconds!`;
-            document.getElementById('modal-overlay').style.display = 'flex';
-        }
     }
 
     function handleDrop(e) {
@@ -286,14 +246,21 @@
             slot.appendChild(tile);
             tile.classList.add('correct');
             tile.draggable = false;
-            currentCorrectTiles++;
-            checkRowCompletion(slot);
+            currentCorrect++;
+            checkRowStatus(slot);
         }
     }
 
-    function closeModal() { initGame(); }
+    function checkRowStatus(slot) {
+        const row = slot.parentElement;
+        if ([...row.querySelectorAll('.slot')].every(s => s.querySelector('.tile.correct'))) row.classList.add('row-complete');
+        if (currentCorrect === totalNeeded) {
+            clearInterval(timerInt);
+            document.getElementById('final-stats').innerText = `You finished in ${seconds} seconds!`;
+            document.getElementById('modal-overlay').style.display = 'flex';
+        }
+    }
 
-    // --- TOUCH ENGINE ---
     let activeTile = null;
     function handleTouchStart(e) { if(!e.target.classList.contains('correct')) activeTile = e.target; }
     function handleTouchMove(e) {
@@ -301,8 +268,8 @@
         e.preventDefault();
         let touch = e.touches[0];
         activeTile.style.position = 'fixed';
-        activeTile.style.left = touch.clientX - 25 + 'px';
-        activeTile.style.top = touch.clientY - 25 + 'px';
+        activeTile.style.left = (touch.clientX - activeTile.offsetWidth / 2) + 'px';
+        activeTile.style.top = (touch.clientY - activeTile.offsetHeight / 2) + 'px';
     }
     function handleTouchEnd(e) {
         if (!activeTile) return;
@@ -315,8 +282,8 @@
             slot.appendChild(activeTile);
             activeTile.classList.add('correct');
             activeTile.style.position = 'static';
-            currentCorrectTiles++;
-            checkRowCompletion(slot);
+            currentCorrect++;
+            checkRowStatus(slot);
         } else {
             activeTile.style.position = 'static';
             document.getElementById('scrambled-zone').appendChild(activeTile);
